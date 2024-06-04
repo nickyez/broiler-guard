@@ -11,13 +11,12 @@ return new class extends Migration
      */
     public function up(): void
     {
-        Schema::create('users', function (Blueprint $table) {
-            $table->id();
-            $table->string('name');
-            $table->string('email')->unique();
-            $table->text('password');
-            $table->text('avatar')->nullable();
-            $table->rememberToken();
+        Schema::create('config_lamps', function (Blueprint $table) {
+            $table->string('device_id');
+            $table->foreign('device_id')->references('id')->on('devices');
+            $table->boolean('status')->default(0);
+            $table->time('time_on')->nullable();
+            $table->time('time_off')->nullable();
             $table->timestamps();
         });
     }
@@ -27,6 +26,6 @@ return new class extends Migration
      */
     public function down(): void
     {
-        Schema::dropIfExists('users');
+        Schema::dropIfExists('config_lamps');
     }
 };

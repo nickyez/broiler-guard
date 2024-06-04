@@ -11,13 +11,13 @@ return new class extends Migration
      */
     public function up(): void
     {
-        Schema::create('users', function (Blueprint $table) {
+        Schema::create('data_sensors', function (Blueprint $table) {
             $table->id();
-            $table->string('name');
-            $table->string('email')->unique();
-            $table->text('password');
-            $table->text('avatar')->nullable();
-            $table->rememberToken();
+            $table->string('device_id');
+            $table->foreign('device_id')->references('id')->on('devices');
+            $table->float('temperature')->nullable();
+            $table->float('humidity')->nullable();
+            $table->float('light_intensity')->nullable();
             $table->timestamps();
         });
     }
@@ -27,6 +27,6 @@ return new class extends Migration
      */
     public function down(): void
     {
-        Schema::dropIfExists('users');
+        Schema::dropIfExists('data_sensors');
     }
 };
