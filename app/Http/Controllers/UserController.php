@@ -13,6 +13,7 @@ class UserController extends Controller
     public function index()
     {
         $users = User::all();
+        // dd($users);
         return view('content.manage.users.index', compact('users'));
     }
 
@@ -21,7 +22,7 @@ class UserController extends Controller
      */
     public function create()
     {
-        //
+        return view('content.manage.users.create');
     }
 
     /**
@@ -29,7 +30,12 @@ class UserController extends Controller
      */
     public function store(Request $request)
     {
-        //
+        $validated = $request->validate([
+            "name" => ['required'],
+            "email" => ['required','email'],
+            "password" => ['required']
+        ]);
+        
     }
 
     /**

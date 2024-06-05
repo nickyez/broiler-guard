@@ -32,13 +32,13 @@
                         <span class="hide-menu">Configuration Menu</span>
                     </li>
                     <li class="sidebar-item">
-                        <a class="sidebar-link" href="{{ url('/heater') }}" aria-expanded="false">
+                        <a class="sidebar-link" href="{{ url('/config/heater') }}" aria-expanded="false">
                             <iconify-icon icon="solar:layers-minimalistic-bold-duotone"></iconify-icon>
                             <span class="hide-menu">Heater</span>
                         </a>
                     </li>
                     <li class="sidebar-item">
-                        <a class="sidebar-link" href="{{ url('/lamp') }}" aria-expanded="false">
+                        <a class="sidebar-link" href="{{ url('/config/lamp') }}" aria-expanded="false">
                             <iconify-icon icon="solar:danger-circle-line-duotone"></iconify-icon>
                             <span class="hide-menu">Lamp</span>
                         </a>
@@ -53,13 +53,13 @@
                         <span class="hide-menu">Admin Menu</span>
                     </li>
                     <li class="sidebar-item">
-                        <a class="sidebar-link" href="{{ url('/users') }}" aria-expanded="false">
+                        <a class="sidebar-link" href="{{ url('/manage/users') }}" aria-expanded="false">
                             <iconify-icon icon="solar:login-3-line-duotone"></iconify-icon>
                             <span class="hide-menu">Manage Users</span>
                         </a>
                     </li>
                     <li class="sidebar-item">
-                        <a class="sidebar-link" href="{{ url('/device') }}" aria-expanded="false">
+                        <a class="sidebar-link" href="{{ url('/manage/device') }}" aria-expanded="false">
                             <iconify-icon icon="solar:user-plus-rounded-line-duotone"></iconify-icon>
                             <span class="hide-menu">Manage Devices</span>
                         </a>

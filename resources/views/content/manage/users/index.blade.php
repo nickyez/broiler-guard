@@ -8,7 +8,7 @@
       <div class="card-body">
         <div class="d-flex justify-content-between">
           <h5 class="card-title fw-semibold mb-4">Manage Users</h5>
-          <a href="#" class="btn btn-primary">Tambah Users</a>
+          <a href="{{url('manage/users/create')}}" class="btn btn-primary">Tambah Users</a>
         </div>
         <table class="table table-hover">
           <thead>
