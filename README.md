@@ -12,7 +12,7 @@
 ✅ Login <br>
 ✅ Dashboard <br>
 ✅ Users - index <br>
-❌ Users - create <br>
+✅ Users - create <br>
 ❌ Users - edit <br>
 ❌ Device - index <br>
 ❌ Device - create <br>
