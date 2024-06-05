@@ -7,7 +7,7 @@
 <a href="https://packagist.org/packages/laravel/framework"><img src="https://img.shields.io/packagist/l/laravel/framework" alt="License"></a>
 </p>
 
-## Project On Progress (Update / 4 Mei 2024)
+## Project On Progress (Update / 6 Juni 2024 01:00 WIB)
 - Front end (hanya tampilan)<br>
 ✅ Login <br>
 ✅ Dashboard <br>
@@ -28,13 +28,16 @@
 ✅ Login <br>
 ❌ Dashboard `[baru sebagian]`<br>
 ✅ Users - index <br>
-❌ Users - create <br>
+✅ Users - create <br>
 ❌ Users - edit <br>
+✅ Users - delete <br>
 ❌ Device - index <br>
 ❌ Device - create <br>
 ❌ Device - edit <br>
 ❌ Config Heater <br>
 ❌ Config Lamp <br><br>
+
+> Note: Saya menambahkan beberapa package, yaitu *sweet alert* dan *toastr*, package ini digunakan untuk notifikasi error/success dan pop up konfirmasi, cek di file `composer.json`
 ## Contributing
 
 Thank you for considering contributing to the Laravel framework! The contribution guide can be found in the [Laravel documentation](https://laravel.com/docs/contributions).

@@ -19,7 +19,10 @@ Route::post('/auth/logout',[AuthController::class, 'logout']);
 
 Route::middleware('auth')->group(function(){
     Route::get('/', [DashboardController::class, 'index']);
-    Route::middleware('role:admin')->prefix('manage')->group(function(){
+    Route::middleware('role:farmer')->prefix('config')->group(function(){
+        // Route::get('heater', );
+    });
+    Route::middleware('role:admin')->prefix('manage')->name('manage.')->group(function(){
         Route::resource('users', UserController::class);
         Route::resource('device', DeviceController::class);
     });

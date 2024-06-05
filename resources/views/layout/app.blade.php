@@ -10,6 +10,7 @@
   @include('layout.skeleton.script')
   @yield('script')
   @stack('js')
+  @include('sweetalert::alert')
 </body>
 
 </html>
