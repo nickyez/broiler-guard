@@ -24,7 +24,7 @@
 ✅ Send data [`/api/data/{deviceID}`]<br>
 ✅ Get config [`/api/config/{deviceID}`] <br>
 
-- Back end
+- Back end <br>
 ✅ Login <br>
 ❌ Dashboard `[baru sebagian]`<br>
 ✅ Users - index <br>
