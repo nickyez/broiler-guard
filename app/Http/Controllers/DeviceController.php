@@ -3,6 +3,8 @@
 namespace App\Http\Controllers;
 
 use Illuminate\Http\Request;
+use App\Models\Device;
+use App\Models\User;
 
 class DeviceController extends Controller
 {
@@ -11,7 +13,14 @@ class DeviceController extends Controller
      */
     public function index()
     {
-        //
+        $devices = Device::all();
+
+        // Add alert on delete button
+        $title = 'Delete device!';
+        $text = "Are you sure you want to delete?";
+        confirmDelete($title, $text);
+
+        return view('content.manage.device.index', compact('devices'));
     }
 
     /**
@@ -19,7 +28,8 @@ class DeviceController extends Controller
      */
     public function create()
     {
-        //
+        $users = User::role('farmer')->get();
+        return view('content.manage.device.create', compact('users'));
     }
 
     /**
@@ -27,7 +37,25 @@ class DeviceController extends Controller
      */
     public function store(Request $request)
     {
-        //
+        try{
+            $validated = $request->validate([
+                "id" => ['required', 'max:6'],
+                "user_id" => ['required'],
+                "name" => ['required'],
+            ]);
+            
+            $device = new Device;
+            $device->id = $request->id;
+            $device->user_id = $request->user_id;
+            $device->name = $request->name;   
+            $device->save();
+
+            toastr()->success("Device Created Successfully");
+            return redirect()->route('manage.devices.index');
+        } catch (\Illuminate\Database\QueryException $e){
+            toastr()->error($e->getMessage());
+            return redirect()->route('manage.devices.create');
+        }
     }
 
     /**
@@ -43,7 +71,9 @@ class DeviceController extends Controller
      */
     public function edit(string $id)
     {
-        //
+        $device = Device::find($id);
+        $users = User::role('farmer')->get();
+        return view('content.manage.device.edit', compact('device', 'users'));
     }
 
     /**
@@ -51,7 +81,25 @@ class DeviceController extends Controller
      */
     public function update(Request $request, string $id)
     {
-        //
+        try{
+            $validated = $request->validate([
+                "id" => ['required', 'max:6'],
+                "user_id" => ['required'],
+                "name" => ['required'],
+            ]);
+            
+            $device = Device::find($id);
+            $device->id = $request->id ?? $device->id;
+            $device->user_id = $request->user_id ?? $device->user_id;
+            $device->name = $request->name ?? $device->name;   
+            $device->save();
+
+            toastr()->success("Device Updated Successfully");
+            return redirect()->route('manage.devices.index');
+        } catch (\Illuminate\Database\QueryException $e){
+            toastr()->error($e->getMessage());
+            return redirect()->route('manage.devices.edit',$id);
+        }
     }
 
     /**

@@ -59,7 +59,7 @@
                         </a>
                     </li>
                     <li class="sidebar-item">
-                        <a class="sidebar-link" href="{{ url('/manage/device') }}" aria-expanded="false">
+                        <a class="sidebar-link" href="{{ url('/manage/devices') }}" aria-expanded="false">
                             <iconify-icon icon="solar:user-plus-rounded-line-duotone"></iconify-icon>
                             <span class="hide-menu">Manage Devices</span>
                         </a>
