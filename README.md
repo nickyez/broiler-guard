@@ -7,16 +7,16 @@
 <a href="https://packagist.org/packages/laravel/framework"><img src="https://img.shields.io/packagist/l/laravel/framework" alt="License"></a>
 </p>
 
-## Project On Progress (Update / 6 Juni 2024 01:00 WIB)
+## Project On Progress (Update / 7 Juni 2024 08:00 WIB)
 - Front end (hanya tampilan)<br>
 ✅ Login <br>
 ✅ Dashboard <br>
 ✅ Users - index <br>
 ✅ Users - create <br>
-❌ Users - edit <br>
-❌ Device - index <br>
-❌ Device - create <br>
-❌ Device - edit <br>
+✅ Users - edit <br>
+✅ Device - index <br>
+✅ Device - create <br>
+✅ Device - edit <br>
 ❌ Config Heater <br>
 ❌ Config Lamp <br>
 
@@ -29,10 +29,10 @@
 ❌ Dashboard `[baru sebagian]`<br>
 ✅ Users - index <br>
 ✅ Users - create <br>
-❌ Users - edit <br>
+✅ Users - edit <br>
 ✅ Users - delete <br>
-❌ Device - index <br>
-❌ Device - create <br>
+✅ Device - index <br>
+✅ Device - create <br>
 ❌ Device - edit <br>
 ❌ Config Heater <br>
 ❌ Config Lamp <br><br>
