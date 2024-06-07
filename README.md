@@ -33,7 +33,8 @@
 ✅ Users - delete <br>
 ✅ Device - index <br>
 ✅ Device - create <br>
-❌ Device - edit <br>
+✅ Device - edit <br>
+❌ Device - delete <br>
 ❌ Config Heater <br>
 ❌ Config Lamp <br><br>
 
