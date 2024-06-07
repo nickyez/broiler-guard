@@ -8,7 +8,7 @@
             <div class="card-body">
                 <div class="d-flex justify-content-between">
                     <h5 class="card-title fw-semibold mb-4">Manage Users</h5>
-                    <a href="{{ url('manage/users/create') }}" class="btn btn-primary">Tambah Users</a>
+                    <a href="{{ url('manage/users/create') }}" class="btn btn-primary">Add Users</a>
                 </div>
                 <table class="table table-hover">
                     <thead>
@@ -32,7 +32,7 @@
                                     <a href="{{ route('manage.users.edit', $item->id) }}"
                                         class="btn btn-secondary me-2">Edit</a>
                                     <a href="{{ route('manage.users.destroy', $item->id) }}" class="btn btn-danger"
-                                        data-confirm-delete="true">Hapus</a>
+                                        data-confirm-delete="true">Delete</a>
                                 </td>
                             </tr>
                         @endforeach
