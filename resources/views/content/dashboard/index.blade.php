@@ -15,7 +15,7 @@
                             <h6 class="mb-0 fs-4">Temperature</h6>
                         </div>
                         <div class="d-flex align-items-center justify-content-end mb-6">
-                            <h6 class="mb-0 fw-medium">{{ $dataSensor->first()->temperature ?? 0 }} °C</h6>
+                            <h6 class="mb-0 fw-medium"><span id="temp-value">0</span> °C</h6>
                         </div>
                         <div class="progress" role="progressbar" aria-label="Basic example" aria-valuenow="25"
                             aria-valuemin="0" aria-valuemax="100" style="height: 7px;">
@@ -36,7 +36,7 @@
                             <h6 class="mb-0 fs-4">Humidity</h6>
                         </div>
                         <div class="d-flex align-items-center justify-content-end mb-6">
-                            <h6 class="mb-0 fw-medium">{{ $dataSensor->first()->humidity ?? 0 }}%</h6>
+                            <h6 class="mb-0 fw-medium"><span id="humi-value">0</span> %</h6>
                         </div>
                         <div class="progress" role="progressbar" aria-label="Basic example" aria-valuenow="25"
                             aria-valuemin="0" aria-valuemax="100" style="height: 7px;">
@@ -57,7 +57,7 @@
                             <h6 class="mb-0 fs-4">Light Intensity</h6>
                         </div>
                         <div class="d-flex align-items-center justify-content-end mb-6">
-                            <h6 class="mb-0 fw-medium">{{ $dataSensor->first()->light_intensity ?? 0 }} lux</h6>
+                            <h6 class="mb-0 fw-medium"> <span id="light-value">0</span> lux</h6>
                         </div>
                         <div class="progress" role="progressbar" aria-label="Basic example" aria-valuenow="25"
                             aria-valuemin="0" aria-valuemax="100" style="height: 7px;">
@@ -272,6 +272,7 @@
 
 @push('js')
     <script src="{{ asset('libs/apexcharts/dist/apexcharts.min.js') }}"></script>
+    <script src="https://unpkg.com/mqtt/dist/mqtt.min.js"></script>
     <script>
         $(function() {
 
@@ -427,5 +428,61 @@
             new ApexCharts(document.querySelector("#total-income"), customers).render();
 
         })
+    </script>
+    <script>
+        window.addEventListener('load',function(){
+        const url = 'wss://sa201a17.ala.asia-southeast1.emqxsl.com:8084/mqtt'
+        const options = {
+            clean: true,
+            connectTimeout: 4000,
+            clientId: 'mqtt-panel-iot',
+            username: 'nicky',
+            password: 'nicky',
+            ca: `-----BEGIN CERTIFICATE-----
+            MIIDrzCCApegAwIBAgIQCDvgVpBCRrGhdWrJWZHHSjANBgkqhkiG9w0BAQUFADBh
+            MQswCQYDVQQGEwJVUzEVMBMGA1UEChMMRGlnaUNlcnQgSW5jMRkwFwYDVQQLExB3
+            d3cuZGlnaWNlcnQuY29tMSAwHgYDVQQDExdEaWdpQ2VydCBHbG9iYWwgUm9vdCBD
+            QTAeFw0wNjExMTAwMDAwMDBaFw0zMTExMTAwMDAwMDBaMGExCzAJBgNVBAYTAlVT
+            MRUwEwYDVQQKEwxEaWdpQ2VydCBJbmMxGTAXBgNVBAsTEHd3dy5kaWdpY2VydC5j
+            b20xIDAeBgNVBAMTF0RpZ2lDZXJ0IEdsb2JhbCBSb290IENBMIIBIjANBgkqhkiG
+            9w0BAQEFAAOCAQ8AMIIBCgKCAQEA4jvhEXLeqKTTo1eqUKKPC3eQyaKl7hLOllsB
+            CSDMAZOnTjC3U/dDxGkAV53ijSLdhwZAAIEJzs4bg7/fzTtxRuLWZscFs3YnFo97
+            nh6Vfe63SKMI2tavegw5BmV/Sl0fvBf4q77uKNd0f3p4mVmFaG5cIzJLv07A6Fpt
+            43C/dxC//AH2hdmoRBBYMql1GNXRor5H4idq9Joz+EkIYIvUX7Q6hL+hqkpMfT7P
+            T19sdl6gSzeRntwi5m3OFBqOasv+zbMUZBfHWymeMr/y7vrTC0LUq7dBMtoM1O/4
+            gdW7jVg/tRvoSSiicNoxBN33shbyTApOB6jtSj1etX+jkMOvJwIDAQABo2MwYTAO
+            BgNVHQ8BAf8EBAMCAYYwDwYDVR0TAQH/BAUwAwEB/zAdBgNVHQ4EFgQUA95QNVbR
+            TLtm8KPiGxvDl7I90VUwHwYDVR0jBBgwFoAUA95QNVbRTLtm8KPiGxvDl7I90VUw
+            DQYJKoZIhvcNAQEFBQADggEBAMucN6pIExIK+t1EnE9SsPTfrgT1eXkIoyQY/Esr
+            hMAtudXH/vTBH1jLuG2cenTnmCmrEbXjcKChzUyImZOMkXDiqw8cvpOp/2PV5Adg
+            06O/nVsJ8dWO41P0jmP6P6fbtGbfYmbW0W5BjfIttep3Sp+dWOIrWcBAI+0tKIJF
+            PnlUkiaY4IBIqDfv8NZ5YBberOgOzW6sRBc4L0na4UU+Krk2U886UAb3LujEV0ls
+            YSEY1QSteDwsOoBrp+uvFRTp2InBuThs4pFsiv9kuXclVzDAGySj4dzp30d8tbQk
+            CAUw7C29C79Fv1C5qfPrmAESrciIxpg0X40KPMbp1ZWVbd4=
+            -----END CERTIFICATE-----`
+        }
+        const client  = mqtt.connect(url, options)
+        client.on('connect', function () {
+            console.log('Connected')
+            client.subscribe('/temperature', function (err) {
+                if (!err) {
+                    client.publish('/temperature', 'Hello mqtt')
+                }
+            })
+        })
+
+        // Untuk mengambil pesan / message dari topic temperature
+        client.on('message', async function (topic, message) {
+            if (topic == '/temperature'){
+                if (typeof message == 'object'){
+                    console.log(message.toString())
+                    const data = JSON.parse(message);
+                    $('#temp-value').html(data.temperature)
+                    $('#humi-value').html(data.humidity)
+                    $('#light-value').html(data.light_intensity)
+                }
+            }
+        })
+    })
     </script>
 @endpush
