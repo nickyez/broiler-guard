@@ -15,4 +15,11 @@ class ConfigLamp extends Model
      * @var bool
      */
     public $timestamps = true;
+
+    /**
+     * The primary key associated with the table.
+     *
+     * @var string
+     */
+    protected $primaryKey = 'device_id';
 }
