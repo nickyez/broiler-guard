@@ -17,6 +17,13 @@ class ConfigLamp extends Model
     public $timestamps = true;
 
     /**
+     * The data type of the primary key ID.
+     *
+     * @var string
+     */
+    protected $keyType = 'string';
+
+    /**
      * The primary key associated with the table.
      *
      * @var string
