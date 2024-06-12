@@ -15,11 +15,12 @@
                             <h6 class="mb-0 fs-4">Temperature</h6>
                         </div>
                         <div class="d-flex align-items-center justify-content-end mb-6">
-                            <h6 class="mb-0 fw-medium"><span id="temp-value">0</span> °C</h6>
+                            <h6 class="mb-0 fw-medium"><span
+                                    id="temp-value">{{ $dataSensor->first()->temperature ?? 0 }}</span> °C</h6>
                         </div>
                         <div class="progress" role="progressbar" aria-label="Basic example" aria-valuenow="25"
                             aria-valuemin="0" aria-valuemax="100" style="height: 7px;">
-                            <div class="progress-bar bg-danger"
+                            <div class="progress-bar bg-danger" id="temp-bar"
                                 style="width: {{ $dataSensor->first()->temperature ?? 0 }}%"></div>
                         </div>
                     </div>
@@ -36,11 +37,12 @@
                             <h6 class="mb-0 fs-4">Humidity</h6>
                         </div>
                         <div class="d-flex align-items-center justify-content-end mb-6">
-                            <h6 class="mb-0 fw-medium"><span id="humi-value">0</span> %</h6>
+                            <h6 class="mb-0 fw-medium"><span
+                                    id="humi-value">{{ $dataSensor->first()->humidity ?? 0 }}</span> %</h6>
                         </div>
                         <div class="progress" role="progressbar" aria-label="Basic example" aria-valuenow="25"
                             aria-valuemin="0" aria-valuemax="100" style="height: 7px;">
-                            <div class="progress-bar bg-secondary"
+                            <div class="progress-bar bg-secondary" id="humi-bar"
                                 style="width: {{ $dataSensor->first()->humidity ?? 0 }}%"></div>
                         </div>
                     </div>
@@ -57,11 +59,13 @@
                             <h6 class="mb-0 fs-4">Light Intensity</h6>
                         </div>
                         <div class="d-flex align-items-center justify-content-end mb-6">
-                            <h6 class="mb-0 fw-medium"> <span id="light-value">0</span> lux</h6>
+                            <h6 class="mb-0 fw-medium"> <span
+                                    id="light-value">{{ $dataSensor->first()->light_intensity ?? 0 }}</span> lux</h6>
                         </div>
                         <div class="progress" role="progressbar" aria-label="Basic example" aria-valuenow="25"
                             aria-valuemin="0" aria-valuemax="100" style="height: 7px;">
-                            <div class="progress-bar bg-warning" style="width: 83%"></div>
+                            <div class="progress-bar bg-warning" id="light-bar"
+                                style="width: {{ $dataSensor->first()->light_intensity ?? 0 }}%"></div>
                         </div>
                     </div>
                 </div>
@@ -101,16 +105,8 @@
                             <div class="mb-3 mb-sm-0">
                                 <h5 class="card-title fw-semibold">Sensor Statistik</h5>
                             </div>
-                            <div>
-                                <select class="form-select">
-                                    <option value="1">March 2024</option>
-                                    <option value="2">April 2024</option>
-                                    <option value="3">May 2024</option>
-                                    <option value="4">June 2024</option>
-                                </select>
-                            </div>
                         </div>
-                        <div id="revenue-forecast"></div>
+                        <div id="container"></div>
                     </div>
                 </div>
             </div>
@@ -264,6 +260,7 @@
             </div>
         </div>
         <div class="py-6 px-6 text-center">
+            <button onclick="updateSeries()">Update Data</button>
             <p class="mb-0 fs-4">Design and Developed by <a href="https://adminmart.com/" target="_blank"
                     class="pe-1 text-primary text-decoration-underline">AdminMart.com</a></p>
         </div>
@@ -272,173 +269,113 @@
 
 @push('js')
     <script src="{{ asset('libs/apexcharts/dist/apexcharts.min.js') }}"></script>
+    <script src="https://code.highcharts.com/highcharts.js"></script>
     <script src="https://unpkg.com/mqtt/dist/mqtt.min.js"></script>
     <script>
-        $(function() {
+        let chart; // global
 
+        /**
+         * Request data from the server, add it to the graph and set a timeout to
+         * request again
+         */
+        async function requestData(json) {
+            const data = JSON.parse(json)
+            const value = data.temperature;
+            const value1 = data.humidity;
+            const value2 = data.light_intensity;
+            const timestamp = data.created_at;
+            const point = [new Date(timestamp).getTime(), parseFloat(value)];
+            const point1 = [new Date(timestamp).getTime(), parseFloat(value1)];
+            const point2 = [new Date(timestamp).getTime(), parseFloat(value2)];
+            const series = chart.series[0],
+                shift = series.data.length > 20; // shift if the series is
+            const series1 = chart.series[0],
+                shift1 = series.data.length > 20; // shift if the series is
+            const series2 = chart.series[0],
+                shift2 = series.data.length > 20; // shift if the series is
+            // longer than 20
 
-            // -----------------------------------------------------------------------
-            // Subscriptions
-            // -----------------------------------------------------------------------
-            var chart = {
-                series: [{
-                        name: "2024",
-                        data: [
-                            @foreach ($dataSensor as $item)
-                                {{ $item->temperature . ',' }}
-                            @endforeach
-                        ],
-                    },
-                    {
-                        name: "2023",
-                        data: [-2.8, -1.1, -2.5, -1.5, -2.3, -1.9, -1, -2.1, -1.3],
-                    },
+            // add the point
+            chart.series[0].addPoint(point, true, shift);
+            chart.series[1].addPoint(point1, true, shift1);
+            chart.series[2].addPoint(point2, true, shift2);
+        }
 
-                ],
+        window.addEventListener('load', function() {
+            setInterval(() => {
+                let temperature = (Math.random() * (30 - 15) + 15).toFixed(1);
+                let humidity = (Math.random() * (70 - 30) + 30).toFixed(1);
+                let lightIntensity = (Math.random() * (100 - 0) + 0).toFixed(1);
+                $.post("{{ url('/api/data/A001') }}", {
+                    temperature: temperature,
+                    humidity: humidity,
+                    light_intensity: lightIntensity
+                }, function(response) {
+                    console.log(response)
+                });
+            }, 5000);
+            chart = new Highcharts.Chart({
                 chart: {
-                    toolbar: {
-                        show: false,
+                    renderTo: 'container',
+                    type: 'areaspline',
+                    events: {
+                        load: requestData
                     },
-                    type: "bar",
-                    fontFamily: "inherit",
-                    foreColor: "#adb0bb",
-                    height: 270,
-                    stacked: true,
-                    offsetX: -15,
+                    style: {
+                        fontFamily: 'inherit',
+                    },
+                    animation: {
+                        duration: 200
+                    },
+                    height: 300,
                 },
-                colors: ["var(--bs-primary)", "var(--bs-danger)"],
-                plotOptions: {
-                    bar: {
-                        horizontal: false,
-                        barHeight: "60%",
-                        columnWidth: "15%",
-                        borderRadius: [6],
-                        borderRadiusApplication: "end",
-                        borderRadiusWhenStacked: "all",
-                    },
+                title: {
+                    text: null
                 },
-                dataLabels: {
-                    enabled: false,
-                },
-                legend: {
-                    show: false,
-                },
-                grid: {
-                    show: true,
-                    padding: {
-                        top: 0,
-                        bottom: 0,
-                        right: 0,
-                    },
-                    borderColor: "rgba(0,0,0,0.05)",
-                    xaxis: {
-                        lines: {
-                            show: true,
-                        },
-                    },
-                    yaxis: {
-                        lines: {
-                            show: true,
-                        },
-                    },
-                },
-                yaxis: {
-                    min: -5,
-                    max: 5,
-                },
-                xaxis: {
-                    axisBorder: {
-                        show: false,
-                    },
-                    axisTicks: {
-                        show: false,
-                    },
-                    categories: [
-                        "Jan",
-                        "Feb",
-                        "Mar",
-                        "Apr",
-                        "May",
-                        "Jun",
-                        "July",
-                        "Aug",
-                        "Sep",
-                    ],
+                xAxis: {
+                    type: 'datetime',
+                    tickPixelInterval: 150,
+                    maxZoom: 20 * 1000,
                     labels: {
                         style: {
-                            fontSize: "13px",
-                            colors: "#adb0bb",
-                            fontWeight: "400"
-                        },
-                    },
+                            color: '#adb0bb'
+                        }
+                    }
                 },
-                yaxis: {
-                    tickAmount: 4,
-                },
-                tooltip: {
-                    theme: "dark",
-                },
-            };
-
-            var chart = new ApexCharts(
-                document.querySelector("#revenue-forecast"),
-                chart
-            );
-            chart.render();
-
-
-            // -----------------------------------------------------------------------
-            // Total Income
-            // -----------------------------------------------------------------------
-            var customers = {
-                chart: {
-                    id: "sparkline3",
-                    type: "line",
-                    fontFamily: "inherit",
-                    foreColor: "#adb0bb",
-                    height: 60,
-                    sparkline: {
-                        enabled: true,
-                    },
-                    group: "sparklines",
+                yAxis: {
+                    title: null,
+                    labels: {
+                        style: {
+                            color: '#adb0bb'
+                        }
+                    }
                 },
                 series: [{
-                    name: "Income",
-                    color: "var(--bs-danger)",
-                    data: [30, 25, 35, 20, 30, 40],
-                }, ],
-                stroke: {
-                    curve: "smooth",
-                    width: 2,
-                },
-                markers: {
-                    size: 0,
-                },
-                tooltip: {
-                    theme: "dark",
-                    fixed: {
-                        enabled: true,
-                        position: "right",
-                    },
-                    x: {
-                        show: false,
-                    },
-                },
-            };
-            new ApexCharts(document.querySelector("#total-income"), customers).render();
-
-        })
+                    name: 'Temperature',
+                    color: 'var(--bs-danger)',
+                    fillOpacity: 0.1,
+                }, {
+                    name: 'Humidity',
+                    color: 'var(--bs-secondary)',
+                    fillOpacity: 0.1,
+                }, {
+                    name: 'Light Intensity',
+                    color: 'var(--bs-primary)',
+                    fillOpacity: 0.1,
+                }, ]
+            });
+        });
     </script>
     <script>
-        window.addEventListener('load',function(){
-        const url = 'wss://sa201a17.ala.asia-southeast1.emqxsl.com:8084/mqtt'
-        const options = {
-            clean: true,
-            connectTimeout: 4000,
-            clientId: 'mqtt-panel-iot',
-            username: 'nicky',
-            password: 'nicky',
-            ca: `-----BEGIN CERTIFICATE-----
+        window.addEventListener('load', function() {
+            const url = 'wss://sa201a17.ala.asia-southeast1.emqxsl.com:8084/mqtt'
+            const options = {
+                clean: true,
+                connectTimeout: 4000,
+                clientId: 'mqtt-panel-iot',
+                username: 'nicky',
+                password: 'nicky',
+                ca: `-----BEGIN CERTIFICATE-----
             MIIDrzCCApegAwIBAgIQCDvgVpBCRrGhdWrJWZHHSjANBgkqhkiG9w0BAQUFADBh
             MQswCQYDVQQGEwJVUzEVMBMGA1UEChMMRGlnaUNlcnQgSW5jMRkwFwYDVQQLExB3
             d3cuZGlnaWNlcnQuY29tMSAwHgYDVQQDExdEaWdpQ2VydCBHbG9iYWwgUm9vdCBD
@@ -460,29 +397,31 @@
             YSEY1QSteDwsOoBrp+uvFRTp2InBuThs4pFsiv9kuXclVzDAGySj4dzp30d8tbQk
             CAUw7C29C79Fv1C5qfPrmAESrciIxpg0X40KPMbp1ZWVbd4=
             -----END CERTIFICATE-----`
-        }
-        const client  = mqtt.connect(url, options)
-        client.on('connect', function () {
-            console.log('Connected')
-            client.subscribe('/temperature', function (err) {
-                if (!err) {
-                    client.publish('/temperature', 'Hello mqtt')
+            }
+            const client = mqtt.connect(url, options)
+            client.on('connect', function() {
+                console.log('Connected')
+                client.subscribe('/data', function(err) {
+                    console.log('subscribe to /data')
+                })
+            })
+
+            // Untuk mengambil pesan / message dari topic temperature
+            client.on('message', async function(topic, message) {
+                if (topic == '/data') {
+                    if (typeof message == 'object') {
+                        console.log(message.toString())
+                        const data = JSON.parse(message);
+                        $('#temp-value').html(data.temperature)
+                        $('#humi-value').html(data.humidity)
+                        $('#light-value').html(data.light_intensity)
+                        $('#temp-bar').css('width', `${data.temperature}%`)
+                        $('#humi-bar').css('width', `${data.humidity}%`)
+                        $('#light-bar').css('width', `${data.light_intensity}%`)
+                        await requestData(message)
+                    }
                 }
             })
         })
-
-        // Untuk mengambil pesan / message dari topic temperature
-        client.on('message', async function (topic, message) {
-            if (topic == '/temperature'){
-                if (typeof message == 'object'){
-                    console.log(message.toString())
-                    const data = JSON.parse(message);
-                    $('#temp-value').html(data.temperature)
-                    $('#humi-value').html(data.humidity)
-                    $('#light-value').html(data.light_intensity)
-                }
-            }
-        })
-    })
     </script>
 @endpush

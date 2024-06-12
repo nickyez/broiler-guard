@@ -8,6 +8,7 @@ use App\Models\Device;
 use App\Models\ConfigHeater;
 use App\Models\ConfigLamp;
 use App\Models\DataSensor;
+use PhpMqtt\Client\Facades\MQTT;
 
 class MainController extends Controller
 {
@@ -58,6 +59,13 @@ class MainController extends Controller
                 'humidity' => $request->humidity,
                 'light_intensity' => $request->light_intensity,
             ]);
+            MQTT::publish('/data', json_encode([
+                'device_id' => $deviceId,
+                'temperature' => $request->temperature,
+                'humidity' => $request->humidity,
+                'light_intensity' => $request->light_intensity,
+                'created_at' => $dataSensor->created_at 
+            ]));
             return response()->json([
                 "status" => "Success",
                 "message" => "Data successfuly created",
