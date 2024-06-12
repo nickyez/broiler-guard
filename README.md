@@ -7,7 +7,7 @@
 <a href="https://packagist.org/packages/laravel/framework"><img src="https://img.shields.io/packagist/l/laravel/framework" alt="License"></a>
 </p>
 
-## Project On Progress (Update / 7 Juni 2024 08:00 WIB)
+## Project On Progress (Update / 12 Juni 2024 21:00 WIB)
 - Front end (hanya tampilan)<br>
 ✅ Login <br>
 ✅ Dashboard <br>
@@ -17,16 +17,16 @@
 ✅ Device - index <br>
 ✅ Device - create <br>
 ✅ Device - edit <br>
-❌ Config Heater <br>
-❌ Config Lamp <br>
+✅ Config Heater <br>
+✅ Config Lamp <br>
 
 - API <br>
-✅ Send data [`/api/data/{deviceID}`]<br>
+✅ Send data [`/api/data/{deviceID}`] - add mqtt<br>
 ✅ Get config [`/api/config/{deviceID}`] <br>
 
 - Back end <br>
 ✅ Login <br>
-❌ Dashboard `[baru sebagian]`<br>
+✅ Dashboard - kurang tampilan log<br>
 ✅ Users - index <br>
 ✅ Users - create <br>
 ✅ Users - edit <br>
@@ -34,11 +34,12 @@
 ✅ Device - index <br>
 ✅ Device - create <br>
 ✅ Device - edit <br>
-❌ Device - delete <br>
-❌ Config Heater <br>
-❌ Config Lamp <br><br>
+✅ Device - delete <br>
+✅ Config Heater <br>
+✅ Config Lamp <br><br>
 
 > Note: Saya menambahkan beberapa package, yaitu *sweet alert* dan *toastr*, package ini digunakan untuk notifikasi error/success dan pop up konfirmasi, cek di file `composer.json`
+> Note (12 Juni 2024): Saya menambahkan satu package yaitu mqtt-client, jangan lupa untuk jalankan `composer install`
 ## Contributing
 
 Thank you for considering contributing to the Laravel framework! The contribution guide can be found in the [Laravel documentation](https://laravel.com/docs/contributions).
